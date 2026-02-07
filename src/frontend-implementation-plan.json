@@ -1,0 +1,30 @@
+{
+  "kind": "implementation_plan",
+  "version": "1.0",
+  "title": "Fix chapter export download + actionable error messages",
+  "requirements": [
+    {
+      "id": "REQ-11",
+      "summary": "Make chapter export (PDF/DOCX) reliably download a file from the chapter editor and replace generic failures with actionable English error messages while preventing duplicate export requests.",
+      "acceptanceCriteria": [
+        "From the chapter edit view, clicking “Export PDF” downloads a .pdf file for an empty chapter and for a chapter with content.",
+        "From the chapter edit view, clicking “Export DOCX” downloads a .docx file for an empty chapter and for a chapter with content.",
+        "The export UI indicates exporting state and prevents repeated clicks while an export is in progress (no duplicate requests).",
+        "If export fails, the toast/error message shown to the user is in English and includes a short reason derived from the thrown error (while still being safe to display).",
+        "The downloaded files have sanitized filenames based on the chapter title (as currently implemented via sanitizeFilename)."
+      ],
+      "file_operations": [
+        {
+          "path": "frontend/src/lib/exportError.ts",
+          "operation": "create",
+          "description": "Add a small utility to derive a short, safe-to-display English reason string from unknown thrown errors (e.g., Error.message, serialized values, and common agent/canister error patterns), with length limits and fallback text."
+        },
+        {
+          "path": "frontend/src/components/ChapterEditor.tsx",
+          "operation": "modify",
+          "description": "Update the export handlers to (1) allow exporting even when the chapter content is empty (remove the current early-return that blocks empty exports), (2) set and honor a single exporting guard at the very start of the export flow (including any auto-save) to prevent duplicate clicks/requests, (3) on success, always trigger browser download using downloadFile with the correct MIME type and sanitized filenames via sanitizeFilename, and (4) on failure (including null/empty backend response), show an English toast like \"Export failed: <reason>\" where <reason> comes from the new exportError utility instead of the current generic/localized message."
+        }
+      ]
+    }
+  ]
+}

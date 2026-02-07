@@ -1,0 +1,27 @@
+{
+  "kind": "feature_evidence_report",
+  "features": [
+    {
+      "featureId": "feature-fix-the-frontend-export-flow-in-the-chapter-editor-so-clicking-export-pdf-or-export-docx-reliably-triggers-a-file-download-and-improve-error-reporting-so-the-user-is-not-left-with-a-generic-export-failed-when-the-backend-call-fails",
+      "featureTitle": "Fix the frontend export flow in the chapter editor so clicking “Export PDF” or “Export DOCX” reliably triggers a file download, and improve error reporting so the user is not left with a generic 'export failed' when the backend call fails.",
+      "files": [
+        "frontend/src/components/ChapterEditor.tsx",
+        "frontend/src/lib/exportError.ts"
+      ],
+      "components": [
+        "http-outcalls@1.1.1",
+        "authorization@1.0.1",
+        "core-infrastructure@1.0.2",
+        "shadcn-ui@1.0.0",
+        "build-template-react@1.0.0",
+        "initial-app@1.0.0",
+        "github-export-icp-cli@1.0.0",
+        "blob-storage@2.0.3"
+      ],
+      "testIds": [
+        "REQ-11"
+      ],
+      "confidence": "high"
+    }
+  ]
+}

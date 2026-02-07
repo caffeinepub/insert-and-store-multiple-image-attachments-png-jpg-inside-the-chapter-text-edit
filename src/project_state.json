@@ -1,0 +1,127 @@
+{
+  "schemaVersion": "1.0.0",
+  "projectStateVersion": 9,
+  "summary": "Project to build a secure document editor with support for inserting multiple image attachments (PNG/JPG) stored in a canister backend, plus exporting a single chapter to PDF and DOCX with full formatting and embedded images from the canister via a button in the chapter edit view.",
+  "architectural_notes": [
+    "Images inserted into documents must be uploaded and persisted in the canister (backend) for security; support multiple images per document.",
+    "Export pipeline must convert chapter rich-text content to PDF/DOCX while preserving formatting and embedding canister-stored images directly (not links), exposed via an export action in the chapter editor UI."
+  ],
+  "known_issues": [
+    "Regression in version 52: after login, the “New book” button is greyed out/disabled in draft mode, preventing creation of a new book (works correctly in version 51).",
+    "In version 53, exporting a chapter to PDF or DOCX fails with message \"export failed\" for both empty and non-empty chapters; no file is downloaded (after ~3 seconds)."
+  ],
+  "isFixRequest": true,
+  "existing_features": [
+    {
+      "id": "feature-enable-inserting-images-from-local-files-into-the-rich-text-editor-reactquill-by-uploading-the-file-to-the-canister-and-embedding-a-reference-in-the-chapter-content-so-the-image-renders-on-subsequent-loads",
+      "title": "Enable inserting images from local files into the rich text editor (ReactQuill) by uploading the file to the canister and embedding a reference in the chapter content so the image renders on subsequent loads.",
+      "reqIds": [
+        "REQ-3"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-render-canister-stored-images-in-editor-content-by-resolving-embedded-image-references-into-displayable-urls-bytes-at-runtime",
+      "title": "Render canister-stored images in editor content by resolving embedded image references into displayable URLs/bytes at runtime.",
+      "reqIds": [
+        "REQ-4"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-add-react-query-hooks-for-the-new-attachment-apis-and-integrate-them-into-the-chapter-editor-flow-including-cache-invalidation-keyed-by-chapter-id",
+      "title": "Add React Query hooks for the new attachment APIs and integrate them into the chapter editor flow, including cache invalidation keyed by chapter id.",
+      "reqIds": [
+        "REQ-5"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-add-export-actions-in-the-chapter-edit-view-to-download-the-currently-opened-chapter-as-pdf-and-as-docx",
+      "title": "Add export actions in the chapter edit view to download the currently opened chapter as PDF and as DOCX.",
+      "reqIds": [
+        "REQ-6"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-ensure-exported-pdf-preserves-the-chapter-s-editor-formatting-headings-bold-italic-lists-alignment-line-breaks-and-embeds-all-chapter-images-directly-in-the-pdf-file-no-external-links",
+      "title": "Ensure exported PDF preserves the chapter’s editor formatting (headings, bold/italic, lists, alignment, line breaks) and embeds all chapter images directly in the PDF file (no external links).",
+      "reqIds": [
+        "REQ-7"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-ensure-exported-docx-preserves-the-chapter-s-editor-formatting-headings-bold-italic-lists-alignment-line-breaks-and-embeds-all-chapter-images-directly-in-the-docx-file-no-external-links",
+      "title": "Ensure exported DOCX preserves the chapter’s editor formatting (headings, bold/italic, lists, alignment, line breaks) and embeds all chapter images directly in the DOCX file (no external links).",
+      "reqIds": [
+        "REQ-8"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-fix-the-regression-in-version-52-where-the-new-book-button-on-the-books-list-page-is-disabled-greyed-out-immediately-after-login-preventing-users-from-creating-a-new-book-it-worked-in-version-51-update-the-readiness-disable-logic-so-authenticated-users-can-open-the-create-book-dialog-and-create-a-book-once-the-backend-actor-is-available-and-ensure-the-ui-does-not-remain-disabled-due-to-user-profile-loading-absence",
+      "title": "Fix the regression in version 52 where the “New book” button on the Books list page is disabled/greyed out immediately after login, preventing users from creating a new book (it worked in version 51). Update the readiness/disable logic so authenticated users can open the create-book dialog and create a book once the backend actor is available, and ensure the UI does not remain disabled due to user profile loading/absence.",
+      "reqIds": [
+        "REQ-9"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-fix-the-frontend-export-flow-in-the-chapter-editor-so-clicking-export-pdf-or-export-docx-reliably-triggers-a-file-download-and-improve-error-reporting-so-the-user-is-not-left-with-a-generic-export-failed-when-the-backend-call-fails",
+      "title": "Fix the frontend export flow in the chapter editor so clicking “Export PDF” or “Export DOCX” reliably triggers a file download, and improve error reporting so the user is not left with a generic 'export failed' when the backend call fails.",
+      "reqIds": [
+        "REQ-11"
+      ],
+      "version": 1
+    }
+  ],
+  "new_feature_requests": [
+    {
+      "id": "AR-1",
+      "summary": "Add ability to insert multiple image attachments (PNG/JPG) directly in the text editor, with images uploaded and stored securely in the canister backend.",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-2",
+      "summary": "Add canister-backed image attachment storage with access control so authenticated users can upload and retrieve multiple PNG/JPG images per chapter.",
+      "reqIds": [
+        "REQ-1"
+      ],
+      "status": "pending"
+    },
+    {
+      "id": "AR-3",
+      "summary": "Define a stable schema for attachments and tie lifecycle to chapters (cleanup on chapter deletion) to prevent orphaned images and uncontrolled growth.",
+      "reqIds": [
+        "REQ-2"
+      ],
+      "status": "pending"
+    },
+    {
+      "id": "AR-4",
+      "summary": "Add export of a single chapter to PDF with exact editor formatting preserved and images embedded directly in the file; provide an export button in the chapter edit view.",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-5",
+      "summary": "Add export of a single chapter to DOCX with exact editor formatting preserved and images embedded directly in the file; provide an export button in the chapter edit view.",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-6",
+      "summary": "Fix the backend export APIs so exporting a chapter as PDF or DOCX succeeds for both empty and non-empty chapters and returns a downloadable binary payload to the frontend.",
+      "reqIds": [
+        "REQ-10"
+      ],
+      "status": "pending"
+    }
+  ],
+  "projectName": "Insert and store multiple image attachments (PNG/JPG) inside the chapter text editor",
+  "clarification_mode": "instant",
+  "clarification_rounds": 0
+}

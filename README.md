@@ -1,2 +1,3 @@
-# insert-and-store-multiple-image-attachments-png-jpg-inside-the-chapter-text-edit
-Exported from Caffeine project: Insert and store multiple image attachments (PNG/JPG) inside the chapter text editor
+## 
+
+To run app build and run docker image: `docker build -t app . docker run -it --network host app`

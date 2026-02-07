@@ -1,0 +1,72 @@
+{
+  "kind": "build_request",
+  "title": "Fix chapter export to PDF/DOCX failing with 'export failed'",
+  "priority": "high",
+  "requirements": [
+    {
+      "id": "REQ-10",
+      "text": "Fix the backend export APIs so exporting a chapter as PDF or DOCX succeeds for both empty and non-empty chapters and returns a downloadable binary payload to the frontend.",
+      "target": "backend",
+      "source": {
+        "messageIds": [
+          "recent-messages"
+        ],
+        "quotes": [
+          "ta podstawowa funkcja czyli eksport do pdf lub docx nie dział , po kliknięciu w obu przypadkach jest ten sam komunikat  export failed",
+          "Pobiera się około 3 sekundy i nic nie pobiera , nawet uszkodzonego pliku"
+        ]
+      },
+      "acceptanceCriteria": [
+        "Calling the backend method used by the UI to export a chapter as PDF returns non-empty bytes for an empty chapter and for a chapter with text formatting.",
+        "Calling the backend method used by the UI to export a chapter as DOCX returns non-empty bytes for an empty chapter and for a chapter with text formatting.",
+        "If a chapter contains canister-stored image attachments, the exported PDF embeds the image bytes (no external links).",
+        "If a chapter contains canister-stored image attachments, the exported DOCX embeds the image bytes (no external links).",
+        "Backend export failures return a clear, debuggable error (not a silent failure) so the frontend can display an actionable message."
+      ]
+    },
+    {
+      "id": "REQ-11",
+      "text": "Fix the frontend export flow in the chapter editor so clicking “Export PDF” or “Export DOCX” reliably triggers a file download, and improve error reporting so the user is not left with a generic 'export failed' when the backend call fails.",
+      "target": "frontend",
+      "source": {
+        "messageIds": [
+          "recent-messages"
+        ],
+        "quotes": [
+          "po kliknięciu w obu przypadkach jest ten sam komunikat  export failed",
+          "Pobiera się około 3 sekundy i nic nie pobiera , nawet uszkodzonego pliku"
+        ]
+      },
+      "acceptanceCriteria": [
+        "From the chapter edit view, clicking “Export PDF” downloads a .pdf file for an empty chapter and for a chapter with content.",
+        "From the chapter edit view, clicking “Export DOCX” downloads a .docx file for an empty chapter and for a chapter with content.",
+        "The export UI indicates exporting state and prevents repeated clicks while an export is in progress (no duplicate requests).",
+        "If export fails, the toast/error message shown to the user is in English and includes a short reason derived from the thrown error (while still being safe to display).",
+        "The downloaded files have sanitized filenames based on the chapter title (as currently implemented via sanitizeFilename)."
+      ]
+    }
+  ],
+  "constraints": [
+    "Backend must remain a single Motoko actor in backend/main.mo (no additional backend services).",
+    "Do not edit files under frontend/src/components/ui or any other frontend immutablePaths listed in SYSTEM_CONTEXT; compose them instead."
+  ],
+  "nonGoals": [
+    "Adding new export formats beyond PDF and DOCX.",
+    "Changing authentication (must continue using Internet Identity).",
+    "Adding real-time progress streaming for export beyond the existing exporting state."
+  ],
+  "imageRequirements": {
+    "required": [],
+    "edits": []
+  },
+  "userProfileUpdate": {
+    "goalsToAdd": [],
+    "goalsToRemove": [],
+    "preferencesToAdd": [],
+    "preferencesToRemove": [],
+    "miscToAdd": [],
+    "miscToRemove": [],
+    "fieldsToSet": {},
+    "fieldsToDelete": []
+  }
+}

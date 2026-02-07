@@ -1,0 +1,48 @@
+{
+  "kind": "coverage_report",
+  "version": "1.0",
+  "generatedAt": "2026-02-07T10:12:17.143Z",
+  "sources": {
+    "buildRequest": true,
+    "implementationPlan": true
+  },
+  "requirements": {
+    "total": 2,
+    "implemented": 1,
+    "items": [
+      {
+        "id": "REQ-10",
+        "summary": "Fix the backend export APIs so exporting a chapter as PDF or DOCX succeeds for both empty and non-empty chapters and returns a downloadable binary payload to the frontend.",
+        "status": "unknown",
+        "plannedFiles": [],
+        "matchedFiles": []
+      },
+      {
+        "id": "REQ-11",
+        "summary": "Fix the frontend export flow in the chapter editor so clicking “Export PDF” or “Export DOCX” reliably triggers a file download, and improve error reporting so the user is not left with a generic 'export failed' when the backend call fails.",
+        "status": "implemented",
+        "plannedFiles": [
+          "frontend/src/lib/exportError.ts",
+          "frontend/src/components/ChapterEditor.tsx"
+        ],
+        "matchedFiles": [
+          "frontend/src/lib/exportError.ts",
+          "frontend/src/components/ChapterEditor.tsx"
+        ]
+      }
+    ]
+  },
+  "changedFiles": [
+    "backend/main.mo",
+    "build-request.json",
+    "feature_evidence.json",
+    "frontend-file-summaries.txt",
+    "frontend-implementation-plan.json",
+    "frontend/src/components/ChapterEditor.tsx",
+    "frontend/src/lib/exportError.ts",
+    "project_state.json",
+    "scratch/component-selection.json",
+    "spec.md",
+    "spec_vs_diff_report.json"
+  ]
+}
