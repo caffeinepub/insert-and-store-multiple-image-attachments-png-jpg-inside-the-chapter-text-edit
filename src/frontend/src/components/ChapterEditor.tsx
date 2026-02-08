@@ -124,6 +124,21 @@ export default function ChapterEditor({ chapterId, bookId }: ChapterEditorProps)
     resolveImages();
   }, [content, actor]);
 
+  // Calculate word count from plain text
+  const wordCount = useMemo(() => {
+    if (!content) return 0;
+    
+    // Parse HTML and extract plain text
+    const parser = new DOMParser();
+    const doc = parser.parseFromString(content, 'text/html');
+    const plainText = doc.body.textContent || '';
+    
+    // Trim and split by whitespace, filter out empty strings
+    const words = plainText.trim().split(/\s+/).filter(word => word.length > 0);
+    
+    return words.length;
+  }, [content]);
+
   const handleSave = async () => {
     if (!chapter) return;
 
@@ -289,7 +304,6 @@ export default function ChapterEditor({ chapterId, bookId }: ChapterEditorProps)
       return;
     }
 
-    // Prevent duplicate exports
     if (isExporting) {
       return;
     }
@@ -307,15 +321,25 @@ export default function ChapterEditor({ chapterId, bookId }: ChapterEditorProps)
         });
       }
 
-      const result = await exportPdf.mutateAsync(chapterId);
+      const response = await exportPdf.mutateAsync(chapterId);
       
-      if (!result || result.length === 0) {
-        toast.error('Export failed: Empty response from server');
-        return;
+      // Check if export was successful
+      if (!response.success) {
+        throw new Error(response.message || 'Export failed');
       }
 
-      const filename = sanitizeFilename(title || 'chapter') + '.pdf';
-      downloadFile(result, filename, 'application/pdf');
+      // Validate data is present and non-empty
+      if (!response.data || response.data.length === 0) {
+        throw new Error('Export failed: No data received from server');
+      }
+
+      // Generate safe filename
+      const safeTitle = sanitizeFilename(title || 'chapter');
+      const filename = `${safeTitle}.pdf`;
+      
+      // Trigger download
+      downloadFile(response.data, filename, 'application/pdf');
+      
       toast.success('Export to PDF successful');
     } catch (error) {
       console.error('PDF export failed:', error);
@@ -332,7 +356,6 @@ export default function ChapterEditor({ chapterId, bookId }: ChapterEditorProps)
       return;
     }
 
-    // Prevent duplicate exports
     if (isExporting) {
       return;
     }
@@ -350,15 +373,25 @@ export default function ChapterEditor({ chapterId, bookId }: ChapterEditorProps)
         });
       }
 
-      const result = await exportDocx.mutateAsync(chapterId);
+      const response = await exportDocx.mutateAsync(chapterId);
       
-      if (!result || result.length === 0) {
-        toast.error('Export failed: Empty response from server');
-        return;
+      // Check if export was successful
+      if (!response.success) {
+        throw new Error(response.message || 'Export failed');
       }
 
-      const filename = sanitizeFilename(title || 'chapter') + '.docx';
-      downloadFile(result, filename, 'application/vnd.openxmlformats-officedocument.wordprocessingml.document');
+      // Validate data is present and non-empty
+      if (!response.data || response.data.length === 0) {
+        throw new Error('Export failed: No data received from server');
+      }
+
+      // Generate safe filename
+      const safeTitle = sanitizeFilename(title || 'chapter');
+      const filename = `${safeTitle}.docx`;
+      
+      // Trigger download
+      downloadFile(response.data, filename, 'application/vnd.openxmlformats-officedocument.wordprocessingml.document');
+      
       toast.success('Export to DOCX successful');
     } catch (error) {
       console.error('DOCX export failed:', error);
@@ -508,6 +541,10 @@ export default function ChapterEditor({ chapterId, bookId }: ChapterEditorProps)
         <Separator orientation="vertical" className="h-5" />
         <VoiceSearchField chapterId={chapterId} content={content} />
         <SynonymSearchField />
+        <Separator orientation="vertical" className="h-5" />
+        <div className="text-xs text-muted-foreground px-2">
+          {t('editor.wordCount', { count: wordCount.toString() })}
+        </div>
       </div>
 
       <div className="flex-1 overflow-hidden">
@@ -551,15 +588,11 @@ export default function ChapterEditor({ chapterId, bookId }: ChapterEditorProps)
           <div className="space-y-4">
             <div>
               <h4 className="text-sm font-medium mb-2">{t('improve.original')}</h4>
-              <p className="text-sm text-muted-foreground p-3 bg-muted rounded-md">
-                {originalText}
-              </p>
+              <p className="text-sm text-muted-foreground p-3 bg-muted rounded-md">{originalText}</p>
             </div>
             <div>
               <h4 className="text-sm font-medium mb-2">{t('improve.improved')}</h4>
-              <p className="text-sm p-3 bg-primary/5 rounded-md border border-primary/20">
-                {improvedText}
-              </p>
+              <p className="text-sm p-3 bg-primary/5 rounded-md">{improvedText}</p>
             </div>
           </div>
           <DialogFooter>

@@ -579,12 +579,19 @@ export function useGetReadingSpeeds() {
   });
 }
 
-// Export hooks
+// Export response type
+export type ExportResponse = {
+  success: boolean;
+  message: string;
+  data?: Uint8Array;
+};
+
+// Export hooks - return the full response object from backend
 export function useExportChapterAsPdf() {
   const { actor } = useActor();
 
   return useMutation({
-    mutationFn: async (chapterId: string) => {
+    mutationFn: async (chapterId: string): Promise<ExportResponse> => {
       if (!actor) throw new Error('Actor not available');
       return actor.exportChapterAsPdf(chapterId);
     },
@@ -595,7 +602,7 @@ export function useExportChapterAsDocx() {
   const { actor } = useActor();
 
   return useMutation({
-    mutationFn: async (chapterId: string) => {
+    mutationFn: async (chapterId: string): Promise<ExportResponse> => {
       if (!actor) throw new Error('Actor not available');
       return actor.exportChapterAsDocx(chapterId);
     },

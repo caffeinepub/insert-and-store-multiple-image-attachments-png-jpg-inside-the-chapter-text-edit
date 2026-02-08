@@ -1,72 +1,94 @@
 {
   "kind": "build_request",
-  "title": "Fix chapter export to PDF/DOCX failing with 'export failed'",
-  "priority": "high",
+  "title": "Fix regression: “Add book” button unresponsive after login",
+  "priority": "normal",
   "requirements": [
     {
-      "id": "REQ-10",
-      "text": "Fix the backend export APIs so exporting a chapter as PDF or DOCX succeeds for both empty and non-empty chapters and returns a downloadable binary payload to the frontend.",
-      "target": "backend",
-      "source": {
-        "messageIds": [
-          "recent-messages"
-        ],
-        "quotes": [
-          "ta podstawowa funkcja czyli eksport do pdf lub docx nie dział , po kliknięciu w obu przypadkach jest ten sam komunikat  export failed",
-          "Pobiera się około 3 sekundy i nic nie pobiera , nawet uszkodzonego pliku"
-        ]
-      },
-      "acceptanceCriteria": [
-        "Calling the backend method used by the UI to export a chapter as PDF returns non-empty bytes for an empty chapter and for a chapter with text formatting.",
-        "Calling the backend method used by the UI to export a chapter as DOCX returns non-empty bytes for an empty chapter and for a chapter with text formatting.",
-        "If a chapter contains canister-stored image attachments, the exported PDF embeds the image bytes (no external links).",
-        "If a chapter contains canister-stored image attachments, the exported DOCX embeds the image bytes (no external links).",
-        "Backend export failures return a clear, debuggable error (not a silent failure) so the frontend can display an actionable message."
-      ]
-    },
-    {
-      "id": "REQ-11",
-      "text": "Fix the frontend export flow in the chapter editor so clicking “Export PDF” or “Export DOCX” reliably triggers a file download, and improve error reporting so the user is not left with a generic 'export failed' when the backend call fails.",
+      "id": "REQ-1",
+      "text": "Fix the Books List page so the “Add book” (books.new) button always responds to clicks (opens the create-book dialog) even when the backend actor is still initializing; prevent the dialog’s final “Create” action from running until the backend is ready, and show an actionable error message when it is not ready.",
       "target": "frontend",
       "source": {
         "messageIds": [
           "recent-messages"
         ],
         "quotes": [
-          "po kliknięciu w obu przypadkach jest ten sam komunikat  export failed",
-          "Pobiera się około 3 sekundy i nic nie pobiera , nawet uszkodzonego pliku"
+          "w wersje 56 miała dziłający przycisk dodaj książke",
+          "ten przycisk nie działa w ostatnim drafcie",
+          "napraw to",
+          "zaczynaj",
+          "staruj"
         ]
       },
       "acceptanceCriteria": [
-        "From the chapter edit view, clicking “Export PDF” downloads a .pdf file for an empty chapter and for a chapter with content.",
-        "From the chapter edit view, clicking “Export DOCX” downloads a .docx file for an empty chapter and for a chapter with content.",
-        "The export UI indicates exporting state and prevents repeated clicks while an export is in progress (no duplicate requests).",
-        "If export fails, the toast/error message shown to the user is in English and includes a short reason derived from the thrown error (while still being safe to display).",
-        "The downloaded files have sanitized filenames based on the chapter title (as currently implemented via sanitizeFilename)."
+        "On the books list screen, clicking the “Add book” button opens the create-book dialog (it is not inert due to a disabled trigger).",
+        "If the backend actor is not ready, attempting to create shows a clear toast/error text and does not call the createBook mutation.",
+        "When the backend actor becomes ready, creating a book succeeds and navigates to the new book as before."
+      ]
+    },
+    {
+      "id": "REQ-2",
+      "text": "Add a visible backend initialization/failure state on the Books List page: while the actor is being created/initialized, show a small loading indicator near the “Add book” button; if actor initialization fails (actor is null after fetching completes), show an inline error banner with a “Retry” action that re-triggers actor creation (via React Query invalidation/refetch of the actor query) without requiring a full page reload.",
+      "target": "frontend",
+      "source": {
+        "messageIds": [
+          "recent-messages"
+        ],
+        "quotes": [
+          "ten przycisk nie działa w ostatnim drafcie"
+        ]
+      },
+      "acceptanceCriteria": [
+        "While actor is fetching, the UI clearly indicates initialization is in progress.",
+        "If actor initialization ends with no actor available, the page displays an error banner and the “Retry” control re-attempts actor initialization.",
+        "After a successful retry, the create-book flow works."
+      ]
+    },
+    {
+      "id": "REQ-3",
+      "text": "Make backend access control initialization safe and repeatable: update backend/main.mo so initializeAccessControl can be called multiple times for the same caller without trapping, and ensures a newly authenticated caller ends up with the required “user” permissions needed for book CRUD APIs.",
+      "target": "backend",
+      "source": {
+        "messageIds": [
+          "recent-messages"
+        ],
+        "quotes": [
+          "w wersje 56 miała dziłający przycisk dodaj książke",
+          "ten przycisk nie działa w ostatnim drafcie"
+        ]
+      },
+      "acceptanceCriteria": [
+        "Calling initializeAccessControl repeatedly does not trap or break subsequent calls.",
+        "After login, the caller can successfully call getAllBooks and createBook without receiving an “Unauthorized” trap (assuming normal user access)."
+      ]
+    },
+    {
+      "id": "REQ-4",
+      "text": "Fix missing UI translations so raw keys are not shown (e.g., “books.new” in the button label). Update the LanguageContext translations map to include all keys currently used by the login, header, and books list screens (at minimum: books.new, books.myBooks, books.subtitle, books.empty, books.titleRequired, books.creating, general.loading, app.title, login.subtitle, login.connecting, login.privacy, login.loggedOut, language.english, language.polish, theme.toggle) with English and Polish values.",
+      "target": "frontend",
+      "source": {
+        "messageIds": [
+          "recent-messages"
+        ],
+        "quotes": [
+          "The uploaded screenshot shows the button label rendering as the raw key: \"books.new\"."
+        ]
+      },
+      "acceptanceCriteria": [
+        "The “Add book” button label shows a human-readable string (not a translation key) in both Polish and English modes.",
+        "No raw translation keys are displayed on LoginPage, Header, or BooksListPage for the specified keys."
       ]
     }
   ],
   "constraints": [
-    "Backend must remain a single Motoko actor in backend/main.mo (no additional backend services).",
-    "Do not edit files under frontend/src/components/ui or any other frontend immutablePaths listed in SYSTEM_CONTEXT; compose them instead."
+    "Do not modify files under frontend/src/hooks/useInternetIdentity.ts, frontend/src/hooks/useInternetIdentity.tsx, frontend/src/hooks/useActor.ts, frontend/src/main.tsx, or frontend/src/components/ui (compose existing components instead).",
+    "Backend must remain a single Motoko actor in backend/main.mo; add backend/migration.mo only if state schema changes (not expected for this fix)."
   ],
   "nonGoals": [
-    "Adding new export formats beyond PDF and DOCX.",
-    "Changing authentication (must continue using Internet Identity).",
-    "Adding real-time progress streaming for export beyond the existing exporting state."
+    "Adding new features beyond fixing the unresponsive Add Book flow and related initialization/translation regressions.",
+    "Changing authentication provider(s) (must remain Internet Identity)."
   ],
   "imageRequirements": {
     "required": [],
     "edits": []
-  },
-  "userProfileUpdate": {
-    "goalsToAdd": [],
-    "goalsToRemove": [],
-    "preferencesToAdd": [],
-    "preferencesToRemove": [],
-    "miscToAdd": [],
-    "miscToRemove": [],
-    "fieldsToSet": {},
-    "fieldsToDelete": []
   }
 }

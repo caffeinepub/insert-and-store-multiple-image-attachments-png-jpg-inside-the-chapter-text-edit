@@ -32,6 +32,11 @@ export interface Chapter {
   'characterCount' : bigint,
   'bookId' : string,
 }
+export interface ExportResult {
+  'data' : [] | [Uint8Array],
+  'message' : string,
+  'success' : boolean,
+}
 export type ExternalBlob = Uint8Array;
 export interface Highlight {
   'end' : bigint,
@@ -119,8 +124,8 @@ export interface _SERVICE {
   'deleteBook' : ActorMethod<[string], undefined>,
   'deleteChapter' : ActorMethod<[string], undefined>,
   'deleteImageAttachment' : ActorMethod<[string], undefined>,
-  'exportChapterAsDocx' : ActorMethod<[string], [] | [Uint8Array]>,
-  'exportChapterAsPdf' : ActorMethod<[string], [] | [Uint8Array]>,
+  'exportChapterAsDocx' : ActorMethod<[string], ExportResult>,
+  'exportChapterAsPdf' : ActorMethod<[string], ExportResult>,
   'getAllBooks' : ActorMethod<[], Array<Book>>,
   'getAnnotationsForChapter' : ActorMethod<[string], Array<Annotation>>,
   'getAttachmentsForChapter' : ActorMethod<[string], Array<string>>,

@@ -8,13 +8,14 @@ import { useLanguage } from '../contexts/LanguageContext';
 import { useNavigate } from '@tanstack/react-router';
 import { useInternetIdentity } from '../hooks/useInternetIdentity';
 import { useActor } from '../hooks/useActor';
-import { BookOpen, Plus, Edit2, Trash2, MoreVertical } from 'lucide-react';
+import { BookOpen, Plus, Edit2, Trash2, MoreVertical, AlertCircle, RefreshCw } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Card, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
+import { Alert, AlertDescription } from '@/components/ui/alert';
 import {
     DropdownMenu,
     DropdownMenuContent,
@@ -22,6 +23,7 @@ import {
     DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { toast } from 'sonner';
+import { useQueryClient } from '@tanstack/react-query';
 
 export function BooksListPage() {
     const { identity } = useInternetIdentity();
@@ -33,6 +35,7 @@ export function BooksListPage() {
     const createBook = useCreateBook();
     const updateBook = useUpdateBook();
     const deleteBook = useDeleteBook();
+    const queryClient = useQueryClient();
 
     const [isCreateDialogOpen, setIsCreateDialogOpen] = useState(false);
     const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
@@ -43,6 +46,12 @@ export function BooksListPage() {
     const isAuthenticated = !!identity && !identity.getPrincipal().isAnonymous();
     const showProfileSetup = isAuthenticated && !profileLoading && isFetched && userProfile === null;
     const isBackendReady = !!actor && !actorFetching && isAuthenticated;
+    const showActorError = isAuthenticated && !actorFetching && !actor;
+
+    const handleRetryActor = () => {
+        queryClient.invalidateQueries({ queryKey: ['actor'] });
+        toast.info(t('books.retryingConnection'));
+    };
 
     const handleCreateBook = async () => {
         if (!newBookTitle.trim()) {
@@ -51,7 +60,12 @@ export function BooksListPage() {
         }
 
         if (!isBackendReady) {
-            toast.error(t('books.backendNotReady'));
+            toast.error(t('books.backendNotReady'), {
+                action: {
+                    label: t('books.retry'),
+                    onClick: handleRetryActor,
+                },
+            });
             return;
         }
 
@@ -132,49 +146,75 @@ export function BooksListPage() {
                                 {t('books.subtitle')}
                             </p>
                         </div>
-                        <Dialog open={isCreateDialogOpen} onOpenChange={setIsCreateDialogOpen}>
-                            <DialogTrigger asChild>
-                                <Button disabled={!isBackendReady}>
-                                    <Plus className="mr-2 h-4 w-4" />
-                                    {t('books.new')}
-                                </Button>
-                            </DialogTrigger>
-                            <DialogContent className="border-border/50">
-                                <DialogHeader>
-                                    <DialogTitle>{t('books.create')}</DialogTitle>
-                                </DialogHeader>
-                                <div className="space-y-4 pt-4">
-                                    <div className="space-y-2">
-                                        <Label htmlFor="title">{t('books.title')}</Label>
-                                        <Input
-                                            id="title"
-                                            placeholder={t('books.titlePlaceholder')}
-                                            value={newBookTitle}
-                                            onChange={(e) => setNewBookTitle(e.target.value)}
-                                            className="border-border"
-                                        />
-                                    </div>
-                                    <div className="space-y-2">
-                                        <Label htmlFor="description">{t('books.description')}</Label>
-                                        <Textarea
-                                            id="description"
-                                            placeholder={t('books.descriptionPlaceholder')}
-                                            value={newBookDescription}
-                                            onChange={(e) => setNewBookDescription(e.target.value)}
-                                            className="border-border min-h-[100px]"
-                                        />
-                                    </div>
-                                    <Button
-                                        onClick={handleCreateBook}
-                                        disabled={createBook.isPending || !isBackendReady}
-                                        className="w-full"
-                                    >
-                                        {createBook.isPending ? t('books.creating') : t('books.createButton')}
-                                    </Button>
+                        <div className="flex items-center gap-3">
+                            {actorFetching && (
+                                <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                                    <div className="h-4 w-4 animate-spin rounded-full border-2 border-primary border-t-transparent" />
+                                    <span>{t('books.connecting')}</span>
                                 </div>
-                            </DialogContent>
-                        </Dialog>
+                            )}
+                            <Dialog open={isCreateDialogOpen} onOpenChange={setIsCreateDialogOpen}>
+                                <DialogTrigger asChild>
+                                    <Button>
+                                        <Plus className="mr-2 h-4 w-4" />
+                                        {t('books.new')}
+                                    </Button>
+                                </DialogTrigger>
+                                <DialogContent className="border-border/50">
+                                    <DialogHeader>
+                                        <DialogTitle>{t('books.create')}</DialogTitle>
+                                    </DialogHeader>
+                                    <div className="space-y-4 pt-4">
+                                        <div className="space-y-2">
+                                            <Label htmlFor="title">{t('books.title')}</Label>
+                                            <Input
+                                                id="title"
+                                                placeholder={t('books.titlePlaceholder')}
+                                                value={newBookTitle}
+                                                onChange={(e) => setNewBookTitle(e.target.value)}
+                                                className="border-border"
+                                            />
+                                        </div>
+                                        <div className="space-y-2">
+                                            <Label htmlFor="description">{t('books.description')}</Label>
+                                            <Textarea
+                                                id="description"
+                                                placeholder={t('books.descriptionPlaceholder')}
+                                                value={newBookDescription}
+                                                onChange={(e) => setNewBookDescription(e.target.value)}
+                                                className="border-border min-h-[100px]"
+                                            />
+                                        </div>
+                                        <Button
+                                            onClick={handleCreateBook}
+                                            disabled={createBook.isPending || !isBackendReady}
+                                            className="w-full"
+                                        >
+                                            {createBook.isPending ? t('books.creating') : t('books.createButton')}
+                                        </Button>
+                                    </div>
+                                </DialogContent>
+                            </Dialog>
+                        </div>
                     </div>
+
+                    {showActorError && (
+                        <Alert variant="destructive" className="mb-6">
+                            <AlertCircle className="h-4 w-4" />
+                            <AlertDescription className="flex items-center justify-between">
+                                <span>{t('books.connectionError')}</span>
+                                <Button
+                                    variant="outline"
+                                    size="sm"
+                                    onClick={handleRetryActor}
+                                    className="ml-4"
+                                >
+                                    <RefreshCw className="mr-2 h-4 w-4" />
+                                    {t('books.retry')}
+                                </Button>
+                            </AlertDescription>
+                        </Alert>
+                    )}
 
                     {booksLoading || profileLoading ? (
                         <div className="text-center py-12">

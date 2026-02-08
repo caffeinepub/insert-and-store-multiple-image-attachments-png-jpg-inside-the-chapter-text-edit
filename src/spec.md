@@ -1,14 +1,14 @@
 # Specification
 
 ## Summary
-**Goal:** Fix chapter export to PDF/DOCX so it reliably generates and downloads valid files (including for empty chapters), and replace the generic “export failed” message with clearer, actionable errors.
+**Goal:** Restore the “Add book” flow on the Books List page after login by fixing button responsiveness, actor initialization handling, access control initialization, and missing UI translations.
 
 **Planned changes:**
-- Backend: Repair the chapter export APIs for PDF and DOCX to always return a downloadable binary payload for empty and non-empty chapters (including formatted text).
-- Backend: Ensure canister-stored image attachments are embedded directly into exported PDF/DOCX files (no external links).
-- Backend: Return clear, debuggable errors on export failures so the frontend can display an actionable message.
-- Frontend: Fix the chapter editor export flow so “Export PDF” and “Export DOCX” reliably trigger a browser file download.
-- Frontend: Add/ensure an exporting state that prevents repeated clicks while an export is in progress.
-- Frontend: Improve export failure toasts/messages to be in English and include a short reason derived from the thrown error (safe to display), while keeping sanitized filenames based on the chapter title.
+- Ensure the Books List “Add book” button always opens the create-book dialog even while the backend actor is still initializing.
+- Block the dialog’s final “Create” action until the backend actor is ready; if not ready, show a clear actionable toast/error and do not call `createBook`.
+- Add actor initialization status UI near the “Add book” button (small loading indicator while fetching/initializing).
+- If actor initialization fails (no actor after fetch completes), show an inline error banner with a “Retry” action that triggers a React Query invalidation/refetch of the actor query.
+- Update `backend/main.mo` so `initializeAccessControl` is safe to call repeatedly and ensures newly authenticated users receive required “user” permissions for book CRUD APIs.
+- Fix missing translations so raw keys (e.g., `books.new`) are not displayed; add the specified keys with English and Polish values in the LanguageContext translations map.
 
-**User-visible outcome:** From the chapter editor, users can export a chapter to a properly downloaded .pdf or .docx (even if the chapter is empty), with embedded images when present, and see a clear English error message when export fails.
+**User-visible outcome:** On the books list, the “Add book” button shows a proper translated label and always opens the create dialog; users see clear backend initialization/loading or retry states, and creating a book only works once the backend is ready (with a helpful error message otherwise).

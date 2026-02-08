@@ -36,10 +36,10 @@ export interface Highlight {
     chapterId: string;
     start: bigint;
 }
-export interface Book {
-    id: string;
-    title: string;
-    description: string;
+export interface ExportResult {
+    data?: Uint8Array;
+    message: string;
+    success: boolean;
 }
 export interface ImageAttachment {
     id: string;
@@ -63,6 +63,11 @@ export interface http_request_result {
     status: bigint;
     body: Uint8Array;
     headers: Array<http_header>;
+}
+export interface Book {
+    id: string;
+    title: string;
+    description: string;
 }
 export interface Annotation {
     id: string;
@@ -100,8 +105,8 @@ export interface backendInterface {
     deleteBook(id: string): Promise<void>;
     deleteChapter(id: string): Promise<void>;
     deleteImageAttachment(imageId: string): Promise<void>;
-    exportChapterAsDocx(chapterId: string): Promise<Uint8Array | null>;
-    exportChapterAsPdf(chapterId: string): Promise<Uint8Array | null>;
+    exportChapterAsDocx(chapterId: string): Promise<ExportResult>;
+    exportChapterAsPdf(chapterId: string): Promise<ExportResult>;
     getAllBooks(): Promise<Array<Book>>;
     getAnnotationsForChapter(chapterId: string): Promise<Array<Annotation>>;
     getAttachmentsForChapter(chapterId: string): Promise<Array<string>>;

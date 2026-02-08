@@ -24,6 +24,11 @@ export const UserRole = IDL.Variant({
   'user' : IDL.Null,
   'guest' : IDL.Null,
 });
+export const ExportResult = IDL.Record({
+  'data' : IDL.Opt(IDL.Vec(IDL.Nat8)),
+  'message' : IDL.Text,
+  'success' : IDL.Bool,
+});
 export const Book = IDL.Record({
   'id' : IDL.Text,
   'title' : IDL.Text,
@@ -135,12 +140,8 @@ export const idlService = IDL.Service({
   'deleteBook' : IDL.Func([IDL.Text], [], []),
   'deleteChapter' : IDL.Func([IDL.Text], [], []),
   'deleteImageAttachment' : IDL.Func([IDL.Text], [], []),
-  'exportChapterAsDocx' : IDL.Func(
-      [IDL.Text],
-      [IDL.Opt(IDL.Vec(IDL.Nat8))],
-      [],
-    ),
-  'exportChapterAsPdf' : IDL.Func([IDL.Text], [IDL.Opt(IDL.Vec(IDL.Nat8))], []),
+  'exportChapterAsDocx' : IDL.Func([IDL.Text], [ExportResult], []),
+  'exportChapterAsPdf' : IDL.Func([IDL.Text], [ExportResult], []),
   'getAllBooks' : IDL.Func([], [IDL.Vec(Book)], ['query']),
   'getAnnotationsForChapter' : IDL.Func(
       [IDL.Text],
@@ -152,7 +153,7 @@ export const idlService = IDL.Service({
       [IDL.Vec(IDL.Text)],
       ['query'],
     ),
-  'getAvailableFonts' : IDL.Func([], [IDL.Vec(IDL.Text)], []),
+  'getAvailableFonts' : IDL.Func([], [IDL.Vec(IDL.Text)], ['query']),
   'getBoldRanges' : IDL.Func([IDL.Text], [IDL.Vec(BoldRange)], ['query']),
   'getBook' : IDL.Func([IDL.Text], [IDL.Opt(Book)], ['query']),
   'getCallerUserProfile' : IDL.Func([], [IDL.Opt(UserProfile)], ['query']),
@@ -160,15 +161,15 @@ export const idlService = IDL.Service({
   'getChapter' : IDL.Func([IDL.Text], [IDL.Opt(Chapter)], ['query']),
   'getChaptersForBook' : IDL.Func([IDL.Text], [IDL.Vec(Chapter)], ['query']),
   'getCharacterCount' : IDL.Func([IDL.Text], [IDL.Opt(IDL.Nat)], ['query']),
-  'getHighlightColors' : IDL.Func([], [IDL.Vec(IDL.Text)], []),
+  'getHighlightColors' : IDL.Func([], [IDL.Vec(IDL.Text)], ['query']),
   'getHighlights' : IDL.Func([IDL.Text], [IDL.Vec(Highlight)], ['query']),
   'getImageAttachment' : IDL.Func(
       [IDL.Text],
       [IDL.Opt(ImageAttachment)],
       ['query'],
     ),
-  'getPolishVoices' : IDL.Func([], [IDL.Vec(IDL.Text)], []),
-  'getReadingSpeeds' : IDL.Func([], [IDL.Vec(IDL.Text)], []),
+  'getPolishVoices' : IDL.Func([], [IDL.Vec(IDL.Text)], ['query']),
+  'getReadingSpeeds' : IDL.Func([], [IDL.Vec(IDL.Text)], ['query']),
   'getUserLanguagePreference' : IDL.Func([], [IDL.Opt(IDL.Text)], ['query']),
   'getUserProfile' : IDL.Func(
       [IDL.Principal],
@@ -232,6 +233,11 @@ export const idlFactory = ({ IDL }) => {
     'admin' : IDL.Null,
     'user' : IDL.Null,
     'guest' : IDL.Null,
+  });
+  const ExportResult = IDL.Record({
+    'data' : IDL.Opt(IDL.Vec(IDL.Nat8)),
+    'message' : IDL.Text,
+    'success' : IDL.Bool,
   });
   const Book = IDL.Record({
     'id' : IDL.Text,
@@ -345,16 +351,8 @@ export const idlFactory = ({ IDL }) => {
     'deleteBook' : IDL.Func([IDL.Text], [], []),
     'deleteChapter' : IDL.Func([IDL.Text], [], []),
     'deleteImageAttachment' : IDL.Func([IDL.Text], [], []),
-    'exportChapterAsDocx' : IDL.Func(
-        [IDL.Text],
-        [IDL.Opt(IDL.Vec(IDL.Nat8))],
-        [],
-      ),
-    'exportChapterAsPdf' : IDL.Func(
-        [IDL.Text],
-        [IDL.Opt(IDL.Vec(IDL.Nat8))],
-        [],
-      ),
+    'exportChapterAsDocx' : IDL.Func([IDL.Text], [ExportResult], []),
+    'exportChapterAsPdf' : IDL.Func([IDL.Text], [ExportResult], []),
     'getAllBooks' : IDL.Func([], [IDL.Vec(Book)], ['query']),
     'getAnnotationsForChapter' : IDL.Func(
         [IDL.Text],
@@ -366,7 +364,7 @@ export const idlFactory = ({ IDL }) => {
         [IDL.Vec(IDL.Text)],
         ['query'],
       ),
-    'getAvailableFonts' : IDL.Func([], [IDL.Vec(IDL.Text)], []),
+    'getAvailableFonts' : IDL.Func([], [IDL.Vec(IDL.Text)], ['query']),
     'getBoldRanges' : IDL.Func([IDL.Text], [IDL.Vec(BoldRange)], ['query']),
     'getBook' : IDL.Func([IDL.Text], [IDL.Opt(Book)], ['query']),
     'getCallerUserProfile' : IDL.Func([], [IDL.Opt(UserProfile)], ['query']),
@@ -374,15 +372,15 @@ export const idlFactory = ({ IDL }) => {
     'getChapter' : IDL.Func([IDL.Text], [IDL.Opt(Chapter)], ['query']),
     'getChaptersForBook' : IDL.Func([IDL.Text], [IDL.Vec(Chapter)], ['query']),
     'getCharacterCount' : IDL.Func([IDL.Text], [IDL.Opt(IDL.Nat)], ['query']),
-    'getHighlightColors' : IDL.Func([], [IDL.Vec(IDL.Text)], []),
+    'getHighlightColors' : IDL.Func([], [IDL.Vec(IDL.Text)], ['query']),
     'getHighlights' : IDL.Func([IDL.Text], [IDL.Vec(Highlight)], ['query']),
     'getImageAttachment' : IDL.Func(
         [IDL.Text],
         [IDL.Opt(ImageAttachment)],
         ['query'],
       ),
-    'getPolishVoices' : IDL.Func([], [IDL.Vec(IDL.Text)], []),
-    'getReadingSpeeds' : IDL.Func([], [IDL.Vec(IDL.Text)], []),
+    'getPolishVoices' : IDL.Func([], [IDL.Vec(IDL.Text)], ['query']),
+    'getReadingSpeeds' : IDL.Func([], [IDL.Vec(IDL.Text)], ['query']),
     'getUserLanguagePreference' : IDL.Func([], [IDL.Opt(IDL.Text)], ['query']),
     'getUserProfile' : IDL.Func(
         [IDL.Principal],

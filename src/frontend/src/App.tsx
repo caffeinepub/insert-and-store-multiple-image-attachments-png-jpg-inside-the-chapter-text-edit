@@ -1,7 +1,7 @@
 import { ThemeProvider } from 'next-themes';
 import { Toaster } from '@/components/ui/sonner';
-import { LanguageProvider } from './contexts/LanguageContext';
-import { RouterProvider, createRouter, createRootRoute, createRoute, Outlet, redirect } from '@tanstack/react-router';
+import { LanguageProvider, useLanguage } from './contexts/LanguageContext';
+import { RouterProvider, createRouter, createRootRoute, createRoute, Outlet } from '@tanstack/react-router';
 import { BooksListPage } from './pages/BooksListPage';
 import { BookPage } from './pages/BookPage';
 import { ChapterPage } from './pages/ChapterPage';
@@ -25,13 +25,14 @@ function RootLayout() {
 // Auth wrapper component for protected routes
 function ProtectedRoute({ children }: { children: React.ReactNode }) {
     const { identity, isInitializing } = useInternetIdentity();
+    const { t } = useLanguage();
 
     if (isInitializing) {
         return (
             <div className="h-screen flex items-center justify-center bg-background">
                 <div className="text-center space-y-4">
                     <div className="h-12 w-12 mx-auto animate-spin rounded-full border-4 border-primary border-t-transparent" />
-                    <p className="text-muted-foreground">Loading...</p>
+                    <p className="text-muted-foreground">{t('general.loading')}</p>
                 </div>
             </div>
         );

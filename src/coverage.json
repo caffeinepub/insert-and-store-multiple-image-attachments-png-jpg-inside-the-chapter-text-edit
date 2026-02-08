@@ -1,33 +1,57 @@
 {
   "kind": "coverage_report",
   "version": "1.0",
-  "generatedAt": "2026-02-07T10:12:17.143Z",
+  "generatedAt": "2026-02-08T12:06:18.836Z",
   "sources": {
     "buildRequest": true,
     "implementationPlan": true
   },
   "requirements": {
-    "total": 2,
-    "implemented": 1,
+    "total": 4,
+    "implemented": 3,
     "items": [
       {
-        "id": "REQ-10",
-        "summary": "Fix the backend export APIs so exporting a chapter as PDF or DOCX succeeds for both empty and non-empty chapters and returns a downloadable binary payload to the frontend.",
+        "id": "REQ-1",
+        "summary": "Fix the Books List page so the “Add book” (books.new) button always responds to clicks (opens the create-book dialog) even when the backend actor is still initializing; prevent the dialog’s final “Create” action from running until the backend is ready, and show an actionable error message when it is not ready.",
+        "status": "implemented",
+        "plannedFiles": [
+          "frontend/src/pages/BooksListPage.tsx"
+        ],
+        "matchedFiles": [
+          "frontend/src/pages/BooksListPage.tsx"
+        ]
+      },
+      {
+        "id": "REQ-2",
+        "summary": "Add a visible backend initialization/failure state on the Books List page: while the actor is being created/initialized, show a small loading indicator near the “Add book” button; if actor initialization fails (actor is null after fetching completes), show an inline error banner with a “Retry” action that re-triggers actor creation (via React Query invalidation/refetch of the actor query) without requiring a full page reload.",
+        "status": "implemented",
+        "plannedFiles": [
+          "frontend/src/pages/BooksListPage.tsx"
+        ],
+        "matchedFiles": [
+          "frontend/src/pages/BooksListPage.tsx"
+        ]
+      },
+      {
+        "id": "REQ-3",
+        "summary": "Make backend access control initialization safe and repeatable: update backend/main.mo so initializeAccessControl can be called multiple times for the same caller without trapping, and ensures a newly authenticated caller ends up with the required “user” permissions needed for book CRUD APIs.",
         "status": "unknown",
         "plannedFiles": [],
         "matchedFiles": []
       },
       {
-        "id": "REQ-11",
-        "summary": "Fix the frontend export flow in the chapter editor so clicking “Export PDF” or “Export DOCX” reliably triggers a file download, and improve error reporting so the user is not left with a generic 'export failed' when the backend call fails.",
+        "id": "REQ-4",
+        "summary": "Fix missing UI translations so raw keys are not shown (e.g., “books.new” in the button label). Update the LanguageContext translations map to include all keys currently used by the login, header, and books list screens (at minimum: books.new, books.myBooks, books.subtitle, books.empty, books.titleRequired, books.creating, general.loading, app.title, login.subtitle, login.connecting, login.privacy, login.loggedOut, language.english, language.polish, theme.toggle) with English and Polish values.",
         "status": "implemented",
         "plannedFiles": [
-          "frontend/src/lib/exportError.ts",
-          "frontend/src/components/ChapterEditor.tsx"
+          "frontend/src/contexts/LanguageContext.tsx",
+          "frontend/src/pages/LoginPage.tsx",
+          "frontend/src/App.tsx"
         ],
         "matchedFiles": [
-          "frontend/src/lib/exportError.ts",
-          "frontend/src/components/ChapterEditor.tsx"
+          "frontend/src/contexts/LanguageContext.tsx",
+          "frontend/src/pages/LoginPage.tsx",
+          "frontend/src/App.tsx"
         ]
       }
     ]
@@ -38,8 +62,10 @@
     "feature_evidence.json",
     "frontend-file-summaries.txt",
     "frontend-implementation-plan.json",
-    "frontend/src/components/ChapterEditor.tsx",
-    "frontend/src/lib/exportError.ts",
+    "frontend/src/App.tsx",
+    "frontend/src/contexts/LanguageContext.tsx",
+    "frontend/src/pages/BooksListPage.tsx",
+    "frontend/src/pages/LoginPage.tsx",
     "project_state.json",
     "scratch/component-selection.json",
     "spec.md",
