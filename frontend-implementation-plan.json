@@ -1,0 +1,64 @@
+{
+  "kind": "implementation_plan",
+  "version": "1.0",
+  "title": "Fix Add Book responsiveness during actor initialization + restore missing i18n keys",
+  "requirements": [
+    {
+      "id": "REQ-1",
+      "summary": "Ensure the “Add book” button always opens the create-book dialog, and block the final create action until the backend actor is ready with a clear actionable error.",
+      "acceptanceCriteria": [
+        "On the books list screen, clicking the “Add book” button opens the create-book dialog (it is not inert due to a disabled trigger).",
+        "If the backend actor is not ready, attempting to create shows a clear toast/error text and does not call the createBook mutation.",
+        "When the backend actor becomes ready, creating a book succeeds and navigates to the new book as before."
+      ],
+      "file_operations": [
+        {
+          "path": "frontend/src/pages/BooksListPage.tsx",
+          "operation": "modify",
+          "description": "Make the create-book dialog trigger always clickable (do not disable the DialogTrigger/Button). Keep the final “Create” button gated by backend readiness and add an actionable toast when not ready (e.g., include a retry action that re-attempts actor initialization). Use existing shadcn-ui Button/Dialog and existing toast system for consistency. Verify the component's usage instructions before implementing."
+        }
+      ]
+    },
+    {
+      "id": "REQ-2",
+      "summary": "Show actor initialization progress and failure UI near “Add book”, including an inline retry flow that refetches the actor via React Query without page reload.",
+      "acceptanceCriteria": [
+        "While actor is fetching, the UI clearly indicates initialization is in progress.",
+        "If actor initialization ends with no actor available, the page displays an error banner and the “Retry” control re-attempts actor initialization.",
+        "After a successful retry, the create-book flow works."
+      ],
+      "file_operations": [
+        {
+          "path": "frontend/src/pages/BooksListPage.tsx",
+          "operation": "modify",
+          "description": "Add a small loading indicator near the “Add book” area while the actor query is fetching. If the user is authenticated and fetching has finished but actor is still null, render an inline error banner with a “Retry” control that invalidates/refetches the actor React Query cache (without reloading the page). Use existing shadcn-ui Button where appropriate. Verify the component's usage instructions before implementing."
+        }
+      ]
+    },
+    {
+      "id": "REQ-4",
+      "summary": "Restore missing translations so UI never renders raw keys on LoginPage, Header, and BooksListPage for the specified strings.",
+      "acceptanceCriteria": [
+        "The “Add book” button label shows a human-readable string (not a translation key) in both Polish and English modes.",
+        "No raw translation keys are displayed on LoginPage, Header, or BooksListPage for the specified keys."
+      ],
+      "file_operations": [
+        {
+          "path": "frontend/src/contexts/LanguageContext.tsx",
+          "operation": "modify",
+          "description": "Expand the translations map to include (at minimum) the specified keys with English and Polish values: books.new, books.myBooks, books.subtitle, books.empty, books.titleRequired, books.creating, general.loading, app.title, login.subtitle, login.connecting, login.privacy, login.loggedOut, language.english, language.polish, theme.toggle."
+        },
+        {
+          "path": "frontend/src/pages/LoginPage.tsx",
+          "operation": "modify",
+          "description": "Update any translation lookups that use non-existent keys (e.g., replace t('loading') with t('general.loading')) so the login screen does not display raw keys."
+        },
+        {
+          "path": "frontend/src/App.tsx",
+          "operation": "modify",
+          "description": "Replace the hardcoded protected-route loading text with a localized string using LanguageContext (e.g., t('general.loading')) to prevent untranslated text regressions and align with the required keys."
+        }
+      ]
+    }
+  ]
+}

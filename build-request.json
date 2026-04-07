@@ -1,0 +1,94 @@
+{
+  "kind": "build_request",
+  "title": "Fix regression: “Add book” button unresponsive after login",
+  "priority": "normal",
+  "requirements": [
+    {
+      "id": "REQ-1",
+      "text": "Fix the Books List page so the “Add book” (books.new) button always responds to clicks (opens the create-book dialog) even when the backend actor is still initializing; prevent the dialog’s final “Create” action from running until the backend is ready, and show an actionable error message when it is not ready.",
+      "target": "frontend",
+      "source": {
+        "messageIds": [
+          "recent-messages"
+        ],
+        "quotes": [
+          "w wersje 56 miała dziłający przycisk dodaj książke",
+          "ten przycisk nie działa w ostatnim drafcie",
+          "napraw to",
+          "zaczynaj",
+          "staruj"
+        ]
+      },
+      "acceptanceCriteria": [
+        "On the books list screen, clicking the “Add book” button opens the create-book dialog (it is not inert due to a disabled trigger).",
+        "If the backend actor is not ready, attempting to create shows a clear toast/error text and does not call the createBook mutation.",
+        "When the backend actor becomes ready, creating a book succeeds and navigates to the new book as before."
+      ]
+    },
+    {
+      "id": "REQ-2",
+      "text": "Add a visible backend initialization/failure state on the Books List page: while the actor is being created/initialized, show a small loading indicator near the “Add book” button; if actor initialization fails (actor is null after fetching completes), show an inline error banner with a “Retry” action that re-triggers actor creation (via React Query invalidation/refetch of the actor query) without requiring a full page reload.",
+      "target": "frontend",
+      "source": {
+        "messageIds": [
+          "recent-messages"
+        ],
+        "quotes": [
+          "ten przycisk nie działa w ostatnim drafcie"
+        ]
+      },
+      "acceptanceCriteria": [
+        "While actor is fetching, the UI clearly indicates initialization is in progress.",
+        "If actor initialization ends with no actor available, the page displays an error banner and the “Retry” control re-attempts actor initialization.",
+        "After a successful retry, the create-book flow works."
+      ]
+    },
+    {
+      "id": "REQ-3",
+      "text": "Make backend access control initialization safe and repeatable: update backend/main.mo so initializeAccessControl can be called multiple times for the same caller without trapping, and ensures a newly authenticated caller ends up with the required “user” permissions needed for book CRUD APIs.",
+      "target": "backend",
+      "source": {
+        "messageIds": [
+          "recent-messages"
+        ],
+        "quotes": [
+          "w wersje 56 miała dziłający przycisk dodaj książke",
+          "ten przycisk nie działa w ostatnim drafcie"
+        ]
+      },
+      "acceptanceCriteria": [
+        "Calling initializeAccessControl repeatedly does not trap or break subsequent calls.",
+        "After login, the caller can successfully call getAllBooks and createBook without receiving an “Unauthorized” trap (assuming normal user access)."
+      ]
+    },
+    {
+      "id": "REQ-4",
+      "text": "Fix missing UI translations so raw keys are not shown (e.g., “books.new” in the button label). Update the LanguageContext translations map to include all keys currently used by the login, header, and books list screens (at minimum: books.new, books.myBooks, books.subtitle, books.empty, books.titleRequired, books.creating, general.loading, app.title, login.subtitle, login.connecting, login.privacy, login.loggedOut, language.english, language.polish, theme.toggle) with English and Polish values.",
+      "target": "frontend",
+      "source": {
+        "messageIds": [
+          "recent-messages"
+        ],
+        "quotes": [
+          "The uploaded screenshot shows the button label rendering as the raw key: \"books.new\"."
+        ]
+      },
+      "acceptanceCriteria": [
+        "The “Add book” button label shows a human-readable string (not a translation key) in both Polish and English modes.",
+        "No raw translation keys are displayed on LoginPage, Header, or BooksListPage for the specified keys."
+      ]
+    }
+  ],
+  "constraints": [
+    "Do not modify files under frontend/src/hooks/useInternetIdentity.ts, frontend/src/hooks/useInternetIdentity.tsx, frontend/src/hooks/useActor.ts, frontend/src/main.tsx, or frontend/src/components/ui (compose existing components instead).",
+    "Backend must remain a single Motoko actor in backend/main.mo; add backend/migration.mo only if state schema changes (not expected for this fix)."
+  ],
+  "nonGoals": [
+    "Adding new features beyond fixing the unresponsive Add Book flow and related initialization/translation regressions.",
+    "Changing authentication provider(s) (must remain Internet Identity)."
+  ],
+  "imageRequirements": {
+    "required": [],
+    "edits": []
+  }
+}

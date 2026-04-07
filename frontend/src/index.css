@@ -1,0 +1,403 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    /* Light mode - Modern clean neutral palette */
+    --background: 98% 0.002 240;
+    --foreground: 25% 0.01 240;
+    --card: 100% 0 0;
+    --card-foreground: 25% 0.01 240;
+    --popover: 100% 0 0;
+    --popover-foreground: 25% 0.01 240;
+    
+    /* Primary: Balanced blue */
+    --primary: 50% 0.08 240;
+    --primary-foreground: 98% 0.002 240;
+    
+    /* Secondary: Neutral gray */
+    --secondary: 85% 0.005 240;
+    --secondary-foreground: 30% 0.01 240;
+    
+    /* Muted: Light gray */
+    --muted: 92% 0.003 240;
+    --muted-foreground: 50% 0.008 240;
+    
+    /* Accent: Soft graphite */
+    --accent: 60% 0.05 240;
+    --accent-foreground: 98% 0.002 240;
+    
+    /* Destructive: Subtle red */
+    --destructive: 55% 0.15 15;
+    --destructive-foreground: 99% 0.002 15;
+    
+    /* Borders and inputs: Subtle neutral */
+    --border: 88% 0.003 240;
+    --input: 88% 0.003 240;
+    --ring: 50% 0.08 240;
+    
+    --radius: 0.5rem;
+    
+    /* Chart colors - balanced neutral palette */
+    --chart-1: 55% 0.08 240;
+    --chart-2: 55% 0.08 220;
+    --chart-3: 55% 0.08 200;
+    --chart-4: 60% 0.08 180;
+    --chart-5: 50% 0.08 260;
+    
+    /* Sidebar - clean neutral tones */
+    --sidebar: 96% 0.002 240;
+    --sidebar-foreground: 30% 0.01 240;
+    --sidebar-primary: 50% 0.08 240;
+    --sidebar-primary-foreground: 98% 0.002 240;
+    --sidebar-accent: 85% 0.005 240;
+    --sidebar-accent-foreground: 30% 0.01 240;
+    --sidebar-border: 88% 0.003 240;
+    --sidebar-ring: 50% 0.08 240;
+    
+    /* Polish spell check and punctuation error highlighting - RED */
+    --spell-error-underline: 55% 0.20 15;
+  }
+
+  .dark {
+    /* Dark mode - Modern clean neutral tones */
+    --background: 18% 0.01 240;
+    --foreground: 92% 0.003 240;
+    --card: 20% 0.01 240;
+    --card-foreground: 92% 0.003 240;
+    --popover: 20% 0.01 240;
+    --popover-foreground: 92% 0.003 240;
+    
+    /* Primary: Balanced blue */
+    --primary: 60% 0.10 240;
+    --primary-foreground: 98% 0.002 240;
+    
+    /* Secondary: Dark neutral */
+    --secondary: 28% 0.015 240;
+    --secondary-foreground: 88% 0.003 240;
+    
+    /* Muted: Dark gray */
+    --muted: 25% 0.01 240;
+    --muted-foreground: 60% 0.008 240;
+    
+    /* Accent: Soft graphite */
+    --accent: 55% 0.08 240;
+    --accent-foreground: 92% 0.003 240;
+    
+    /* Destructive: Subtle red */
+    --destructive: 58% 0.18 15;
+    --destructive-foreground: 98% 0.002 15;
+    
+    /* Borders and inputs */
+    --border: 28% 0.015 240;
+    --input: 28% 0.015 240;
+    --ring: 60% 0.10 240;
+    
+    /* Chart colors - darker balanced palette */
+    --chart-1: 60% 0.10 240;
+    --chart-2: 60% 0.10 220;
+    --chart-3: 60% 0.10 200;
+    --chart-4: 65% 0.10 180;
+    --chart-5: 55% 0.10 260;
+    
+    /* Sidebar - dark clean */
+    --sidebar: 22% 0.01 240;
+    --sidebar-foreground: 88% 0.003 240;
+    --sidebar-primary: 60% 0.10 240;
+    --sidebar-primary-foreground: 98% 0.002 240;
+    --sidebar-accent: 28% 0.015 240;
+    --sidebar-accent-foreground: 88% 0.003 240;
+    --sidebar-border: 28% 0.015 240;
+    --sidebar-ring: 60% 0.10 240;
+    
+    /* Polish spell check and punctuation error highlighting - RED */
+    --spell-error-underline: 60% 0.22 15;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply bg-background text-foreground;
+  }
+}
+
+/* Rich Text Editor Styling - Modern Clean Theme */
+.rich-text-editor {
+  width: 100%;
+  min-height: 500px;
+}
+
+.quill-editor-clean .ql-container {
+  border: none;
+  font-size: 1.0625rem;
+  line-height: 1.8;
+  min-height: 500px;
+}
+
+.quill-editor-clean .ql-editor {
+  min-height: 500px;
+  padding: 2rem;
+  color: oklch(var(--foreground));
+  font-family: inherit;
+}
+
+.quill-editor-clean .ql-editor.ql-blank::before {
+  color: oklch(var(--muted-foreground));
+  font-style: italic;
+  opacity: 0.6;
+}
+
+/* Quill Toolbar Styling - Modern Clean Theme */
+.quill-editor-clean .ql-toolbar {
+  border: 1px solid oklch(var(--border));
+  border-radius: 0.5rem;
+  background: oklch(var(--card));
+  padding: 0.5rem;
+  margin-bottom: 0.75rem;
+}
+
+.quill-editor-clean .ql-toolbar button {
+  color: oklch(var(--muted-foreground));
+  transition: all 0.2s;
+  width: 28px;
+  height: 28px;
+}
+
+.quill-editor-clean .ql-toolbar button:hover {
+  color: oklch(var(--primary));
+  background: oklch(var(--muted));
+  border-radius: 0.25rem;
+}
+
+.quill-editor-clean .ql-toolbar button.ql-active {
+  color: oklch(var(--primary));
+  background: oklch(var(--primary) / 0.1);
+  border-radius: 0.25rem;
+}
+
+.quill-editor-clean .ql-toolbar .ql-stroke {
+  stroke: oklch(var(--muted-foreground));
+}
+
+.quill-editor-clean .ql-toolbar button:hover .ql-stroke,
+.quill-editor-clean .ql-toolbar button.ql-active .ql-stroke {
+  stroke: oklch(var(--primary));
+}
+
+.quill-editor-clean .ql-toolbar .ql-fill {
+  fill: oklch(var(--muted-foreground));
+}
+
+.quill-editor-clean .ql-toolbar button:hover .ql-fill,
+.quill-editor-clean .ql-toolbar button.ql-active .ql-fill {
+  fill: oklch(var(--primary));
+}
+
+.quill-editor-clean .ql-toolbar .ql-picker-label {
+  color: oklch(var(--muted-foreground));
+  border: 1px solid oklch(var(--border));
+  border-radius: 0.25rem;
+  transition: all 0.2s;
+  padding: 0.25rem 0.5rem;
+}
+
+.quill-editor-clean .ql-toolbar .ql-picker-label:hover {
+  color: oklch(var(--primary));
+  border-color: oklch(var(--primary));
+  background: oklch(var(--muted));
+}
+
+.quill-editor-clean .ql-toolbar .ql-picker-options {
+  background: oklch(var(--popover));
+  border: 1px solid oklch(var(--border));
+  border-radius: 0.5rem;
+  padding: 0.5rem;
+  box-shadow: 0 4px 12px oklch(0% 0 0 / 0.1);
+}
+
+.quill-editor-clean .ql-toolbar .ql-picker-item {
+  color: oklch(var(--foreground));
+  border-radius: 0.25rem;
+  transition: all 0.2s;
+}
+
+.quill-editor-clean .ql-toolbar .ql-picker-item:hover {
+  color: oklch(var(--primary));
+  background: oklch(var(--muted));
+}
+
+/* Editor Content Styling */
+.quill-editor-clean .ql-editor h1 {
+  font-size: 2rem;
+  font-weight: 700;
+  margin-top: 1.5rem;
+  margin-bottom: 1rem;
+  color: oklch(var(--foreground));
+  line-height: 1.3;
+}
+
+.quill-editor-clean .ql-editor h2 {
+  font-size: 1.5rem;
+  font-weight: 600;
+  margin-top: 1.25rem;
+  margin-bottom: 0.75rem;
+  color: oklch(var(--foreground));
+  line-height: 1.4;
+}
+
+.quill-editor-clean .ql-editor h3 {
+  font-size: 1.25rem;
+  font-weight: 600;
+  margin-top: 1rem;
+  margin-bottom: 0.5rem;
+  color: oklch(var(--foreground));
+  line-height: 1.5;
+}
+
+.quill-editor-clean .ql-editor p {
+  margin-bottom: 1rem;
+}
+
+.quill-editor-clean .ql-editor strong {
+  font-weight: 700;
+  color: oklch(var(--foreground));
+}
+
+.quill-editor-clean .ql-editor em {
+  font-style: italic;
+}
+
+.quill-editor-clean .ql-editor u {
+  text-decoration: underline;
+}
+
+.quill-editor-clean .ql-editor ul,
+.quill-editor-clean .ql-editor ol {
+  padding-left: 1.5rem;
+  margin-bottom: 1rem;
+}
+
+.quill-editor-clean .ql-editor li {
+  margin-bottom: 0.5rem;
+}
+
+/* Image Styling */
+.quill-editor-clean .ql-editor img {
+  max-width: 100%;
+  height: auto;
+  display: block;
+  margin: 1rem auto;
+  border-radius: 0.5rem;
+}
+
+.quill-editor-clean .ql-editor img.attachment-unresolved {
+  opacity: 0.5;
+  border: 2px dashed oklch(var(--border));
+}
+
+/* Manual Polish Spell Check and Punctuation Error Highlighting - RED UNDERLINE */
+.spelling-error {
+  text-decoration: underline !important;
+  text-decoration-color: oklch(var(--spell-error-underline)) !important;
+  text-decoration-style: solid !important;
+  text-decoration-thickness: 2px !important;
+  text-underline-offset: 2px !important;
+  cursor: pointer;
+  transition: text-decoration-color 0.2s;
+}
+
+.spelling-error:hover {
+  text-decoration-color: oklch(var(--destructive)) !important;
+  text-decoration-thickness: 2.5px !important;
+}
+
+/* Apply spell check styling to Quill editor content */
+.quill-editor-clean .ql-editor .spelling-error {
+  text-decoration: underline !important;
+  text-decoration-color: oklch(var(--spell-error-underline)) !important;
+  text-decoration-style: solid !important;
+  text-decoration-thickness: 2px !important;
+  text-underline-offset: 2px !important;
+  cursor: pointer;
+  transition: text-decoration-color 0.2s;
+}
+
+.quill-editor-clean .ql-editor .spelling-error:hover {
+  text-decoration-color: oklch(var(--destructive)) !important;
+  text-decoration-thickness: 2.5px !important;
+}
+
+/* Ensure spell error formatting is visible and not overridden */
+.quill-editor-clean .ql-editor span.spelling-error {
+  text-decoration: underline !important;
+  text-decoration-color: oklch(var(--spell-error-underline)) !important;
+  text-decoration-style: solid !important;
+  text-decoration-thickness: 2px !important;
+  text-underline-offset: 2px !important;
+}
+
+/* Selection Styling */
+.quill-editor-clean .ql-editor ::selection {
+  background-color: oklch(var(--primary) / 0.2);
+}
+
+.dark .quill-editor-clean .ql-editor ::selection {
+  background-color: oklch(var(--primary) / 0.25);
+}
+
+/* Scrollbar Styling */
+.quill-editor-clean .ql-editor::-webkit-scrollbar {
+  width: 10px;
+}
+
+.quill-editor-clean .ql-editor::-webkit-scrollbar-track {
+  background: oklch(var(--muted));
+  border-radius: 5px;
+}
+
+.quill-editor-clean .ql-editor::-webkit-scrollbar-thumb {
+  background: oklch(var(--muted-foreground) / 0.3);
+  border-radius: 5px;
+  transition: background 0.2s;
+}
+
+.quill-editor-clean .ql-editor::-webkit-scrollbar-thumb:hover {
+  background: oklch(var(--muted-foreground) / 0.5);
+}
+
+/* Focus State */
+.quill-editor-clean .ql-container.ql-snow {
+  border: 1px solid oklch(var(--border));
+  border-radius: 0.5rem;
+  transition: border-color 0.2s;
+}
+
+.quill-editor-clean .ql-container.ql-snow:focus-within {
+  border-color: oklch(var(--primary));
+  box-shadow: 0 0 0 3px oklch(var(--primary) / 0.1);
+}
+
+/* Dark Mode Adjustments */
+.dark .quill-editor-clean .ql-toolbar {
+  background: oklch(var(--card));
+  border-color: oklch(var(--border));
+}
+
+.dark .quill-editor-clean .ql-container.ql-snow {
+  border-color: oklch(var(--border));
+}
+
+.dark .quill-editor-clean .ql-editor {
+  color: oklch(var(--foreground));
+}
+
+/* Ensure proper text rendering */
+.quill-editor-clean .ql-editor {
+  font-variant-ligatures: none;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}

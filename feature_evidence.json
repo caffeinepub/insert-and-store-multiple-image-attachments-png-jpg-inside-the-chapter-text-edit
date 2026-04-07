@@ -1,0 +1,70 @@
+{
+  "kind": "feature_evidence_report",
+  "features": [
+    {
+      "featureId": "feature-fix-the-books-list-page-so-the-add-book-books-new-button-always-responds-to-clicks-opens-the-create-book-dialog-even-when-the-backend-actor-is-still-initializing-prevent-the-dialog-s-final-create-action-from-running-until-the-backend-is-ready-and-show-an-actionable-error-message-when-it-is-not-ready",
+      "featureTitle": "Fix the Books List page so the “Add book” (books.new) button always responds to clicks (opens the create-book dialog) even when the backend actor is still initializing; prevent the dialog’s final “Create” action from running until the backend is ready, and show an actionable error message when it is not ready.",
+      "files": [
+        "frontend/src/pages/BooksListPage.tsx"
+      ],
+      "components": [
+        "http-outcalls@1.1.1",
+        "authorization@1.0.1",
+        "core-infrastructure@1.0.2",
+        "shadcn-ui@1.0.0",
+        "build-template-react@1.0.0",
+        "initial-app@1.0.0",
+        "github-export-icp-cli@1.0.0",
+        "blob-storage@2.0.3"
+      ],
+      "testIds": [
+        "REQ-1"
+      ],
+      "confidence": "high"
+    },
+    {
+      "featureId": "feature-add-a-visible-backend-initialization-failure-state-on-the-books-list-page-while-the-actor-is-being-created-initialized-show-a-small-loading-indicator-near-the-add-book-button-if-actor-initialization-fails-actor-is-null-after-fetching-completes-show-an-inline-error-banner-with-a-retry-action-that-re-triggers-actor-creation-via-react-query-invalidation-refetch-of-the-actor-query-without-requiring-a-full-page-reload",
+      "featureTitle": "Add a visible backend initialization/failure state on the Books List page: while the actor is being created/initialized, show a small loading indicator near the “Add book” button; if actor initialization fails (actor is null after fetching completes), show an inline error banner with a “Retry” action that re-triggers actor creation (via React Query invalidation/refetch of the actor query) without requiring a full page reload.",
+      "files": [
+        "frontend/src/pages/BooksListPage.tsx"
+      ],
+      "components": [
+        "http-outcalls@1.1.1",
+        "authorization@1.0.1",
+        "core-infrastructure@1.0.2",
+        "shadcn-ui@1.0.0",
+        "build-template-react@1.0.0",
+        "initial-app@1.0.0",
+        "github-export-icp-cli@1.0.0",
+        "blob-storage@2.0.3"
+      ],
+      "testIds": [
+        "REQ-2"
+      ],
+      "confidence": "high"
+    },
+    {
+      "featureId": "feature-fix-missing-ui-translations-so-raw-keys-are-not-shown-e-g-books-new-in-the-button-label-update-the-languagecontext-translations-map-to-include-all-keys-currently-used-by-the-login-header-and-books-list-screens-at-minimum-books-new-books-mybooks-books-subtitle-books-empty-books-titlerequired-books-creating-general-loading-app-title-login-subtitle-login-connecting-login-privacy-login-loggedout-language-english-language-polish-theme-toggle-with-english-and-polish-values",
+      "featureTitle": "Fix missing UI translations so raw keys are not shown (e.g., “books.new” in the button label). Update the LanguageContext translations map to include all keys currently used by the login, header, and books list screens (at minimum: books.new, books.myBooks, books.subtitle, books.empty, books.titleRequired, books.creating, general.loading, app.title, login.subtitle, login.connecting, login.privacy, login.loggedOut, language.english, language.polish, theme.toggle) with English and Polish values.",
+      "files": [
+        "frontend/src/App.tsx",
+        "frontend/src/contexts/LanguageContext.tsx",
+        "frontend/src/pages/LoginPage.tsx"
+      ],
+      "components": [
+        "http-outcalls@1.1.1",
+        "authorization@1.0.1",
+        "core-infrastructure@1.0.2",
+        "shadcn-ui@1.0.0",
+        "build-template-react@1.0.0",
+        "initial-app@1.0.0",
+        "github-export-icp-cli@1.0.0",
+        "blob-storage@2.0.3"
+      ],
+      "testIds": [
+        "REQ-4"
+      ],
+      "confidence": "high"
+    }
+  ]
+}
